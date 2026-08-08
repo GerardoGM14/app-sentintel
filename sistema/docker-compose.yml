@@ -1,0 +1,15 @@
+# Base de datos local para desarrollo: docker compose up -d
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: sentinela-db
+    environment:
+      POSTGRES_USER: sentinela
+      POSTGRES_PASSWORD: sentinela_dev
+      POSTGRES_DB: sentinela
+    ports:
+      - "5433:5432"
+    volumes:
+      - sentinela-data:/var/lib/postgresql/data
+volumes:
+  sentinela-data:

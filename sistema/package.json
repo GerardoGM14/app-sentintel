@@ -1,0 +1,36 @@
+{
+  "name": "sentinela-pyme",
+  "version": "1.0.0",
+  "description": "SentinelaPyME: plataforma web de centralización y análisis en tiempo real de eventos de seguridad para pymes",
+  "main": "src/server.js",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "db:migrate": "node src/db/migrate.js",
+    "db:seed": "node src/db/seed.js",
+    "db:setup": "node src/db/migrate.js && node src/db/seed.js",
+    "simular": "node scripts/simulador.js",
+    "test": "node tests/smoke.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "compression": "^1.8.2",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^18.0.10",
+    "express": "^4.22.3",
+    "express-rate-limit": "^8.7.4",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "nodemailer": "^10.5.0",
+    "pg": "^8.23.1",
+    "socket.io": "^4.8.4",
+    "swagger-ui-express": "^5.0.1",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.7"
+  }
+}
