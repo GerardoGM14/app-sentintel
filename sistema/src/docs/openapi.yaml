@@ -1,0 +1,326 @@
+openapi: 3.0.3
+info:
+  title: SentinelaPyME API
+  version: 1.0.0
+  description: |
+    API REST de SentinelaPyME. Todas las respuestas son JSON.
+    Los usuarios se autentican con una cookie de sesión JWT (HttpOnly, SameSite=Strict) obtenida en /auth/login.
+    Los agentes de recolección se autentican con la cabecera **X-API-Key**.
+    Los errores tienen el formato `{ "error": { "codigo", "mensaje", "detalles" } }`.
+servers:
+  - url: /api/v1
+tags:
+  - name: Autenticación
+  - name: Perfil
+  - name: Ingesta
+  - name: Eventos
+  - name: Activos
+  - name: Alertas
+  - name: Incidentes
+  - name: Panel
+  - name: Administración
+components:
+  securitySchemes:
+    cookieSesion:
+      type: apiKey
+      in: cookie
+      name: sp_sesion
+    apiKeyAgente:
+      type: apiKey
+      in: header
+      name: X-API-Key
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            codigo: { type: string, example: validacion }
+            mensaje: { type: string, example: Revise los datos ingresados. }
+            detalles: { type: object, additionalProperties: { type: string } }
+    Severidad:
+      type: string
+      enum: [baja, media, alta, critica]
+    Evento:
+      type: object
+      required: [categoria]
+      properties:
+        categoria: { type: string, example: AUTH_FALLIDA }
+        fecha: { type: string, format: date-time }
+        ip_origen: { type: string, example: 181.43.2.10 }
+        usuario_objetivo: { type: string, example: admin }
+        mensaje: { type: string, maxLength: 500 }
+        datos: { type: object, description: Carga útil libre (máx. 4 KB) }
+    Activo:
+      type: object
+      required: [nombre, id_tipo_activo, criticidad]
+      properties:
+        nombre: { type: string, minLength: 3, maxLength: 100 }
+        id_tipo_activo: { type: integer }
+        direccion_ip: { type: string, nullable: true }
+        criticidad: { $ref: '#/components/schemas/Severidad' }
+    Incidente:
+      type: object
+      required: [titulo, descripcion, severidad]
+      properties:
+        titulo: { type: string, minLength: 5, maxLength: 150 }
+        descripcion: { type: string, minLength: 20, maxLength: 3000 }
+        severidad: { $ref: '#/components/schemas/Severidad' }
+        id_activo: { type: integer, nullable: true }
+        id_categoria: { type: integer, nullable: true }
+    Regla:
+      type: object
+      required: [nombre, descripcion, id_categoria, umbral, ventana_minutos, severidad]
+      properties:
+        nombre: { type: string }
+        descripcion: { type: string }
+        id_categoria: { type: integer }
+        umbral: { type: integer, minimum: 1 }
+        ventana_minutos: { type: integer, minimum: 1, maximum: 1440 }
+        severidad: { $ref: '#/components/schemas/Severidad' }
+        activa: { type: boolean }
+  responses:
+    Error400: { description: Datos inválidos, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+    Error401: { description: No autenticado, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+    Error403: { description: Sin permisos, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+    Error429: { description: Límite de peticiones excedido, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+security:
+  - cookieSesion: []
+paths:
+  /auth/registro:
+    post:
+      tags: [Autenticación]
+      summary: Registra una pyme y su usuario cliente
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [rut, razon_social, rubro, nombre, apellido, email, password, confirmacion]
+              properties:
+                rut: { type: string, example: 76543210-3 }
+                razon_social: { type: string }
+                rubro: { type: string }
+                nombre: { type: string }
+                apellido: { type: string }
+                email: { type: string, format: email }
+                password: { type: string, minLength: 10 }
+                confirmacion: { type: string }
+      responses:
+        '201': { description: Cuenta creada; se emite la cookie de sesión }
+        '400': { $ref: '#/components/responses/Error400' }
+        '409': { description: Correo o RUT ya registrado }
+        '429': { $ref: '#/components/responses/Error429' }
+  /auth/login:
+    post:
+      tags: [Autenticación]
+      summary: Inicia sesión (bloqueo temporal tras 5 intentos fallidos)
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string }
+      responses:
+        '200': { description: Sesión iniciada (Set-Cookie sp_sesion) }
+        '401': { $ref: '#/components/responses/Error401' }
+        '423': { description: Cuenta bloqueada temporalmente }
+        '429': { $ref: '#/components/responses/Error429' }
+  /auth/logout:
+    post:
+      tags: [Autenticación]
+      summary: Cierra la sesión
+      responses: { '200': { description: Sesión cerrada } }
+  /auth/sesion:
+    get:
+      tags: [Autenticación]
+      summary: Devuelve el usuario autenticado
+      responses:
+        '200': { description: Usuario actual }
+        '401': { $ref: '#/components/responses/Error401' }
+  /auth/recuperar:
+    post:
+      tags: [Autenticación]
+      summary: Envía por correo un enlace de restablecimiento (respuesta genérica)
+      security: []
+      requestBody:
+        required: true
+        content: { application/json: { schema: { type: object, properties: { email: { type: string, format: email } } } } }
+      responses: { '200': { description: Mensaje genérico }, '429': { $ref: '#/components/responses/Error429' } }
+  /auth/restablecer:
+    post:
+      tags: [Autenticación]
+      summary: Restablece la contraseña con el token recibido (uso único, 30 minutos)
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token: { type: string }
+                password: { type: string }
+                confirmacion: { type: string }
+      responses: { '200': { description: Contraseña actualizada }, '400': { $ref: '#/components/responses/Error400' } }
+  /perfil:
+    get: { tags: [Perfil], summary: Obtiene el perfil, responses: { '200': { description: Perfil } } }
+    put:
+      tags: [Perfil]
+      summary: Actualiza nombre, apellido y correo
+      requestBody:
+        required: true
+        content: { application/json: { schema: { type: object, properties: { nombre: { type: string }, apellido: { type: string }, email: { type: string } } } } }
+      responses: { '200': { description: Actualizado }, '400': { $ref: '#/components/responses/Error400' } }
+  /perfil/password:
+    put:
+      tags: [Perfil]
+      summary: Cambia la contraseña (exige la actual; cierra otras sesiones)
+      requestBody:
+        required: true
+        content: { application/json: { schema: { type: object, properties: { actual: { type: string }, password: { type: string }, confirmacion: { type: string } } } } }
+      responses: { '200': { description: Actualizada }, '400': { $ref: '#/components/responses/Error400' } }
+  /ingesta/eventos:
+    post:
+      tags: [Ingesta]
+      summary: Recibe un lote de 1 a 500 eventos desde un agente
+      security: [ { apiKeyAgente: [] } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                eventos: { type: array, minItems: 1, maxItems: 500, items: { $ref: '#/components/schemas/Evento' } }
+      responses:
+        '202': { description: 'Lote aceptado: { aceptados, rechazados, alertas_generadas }' }
+        '400': { $ref: '#/components/responses/Error400' }
+        '401': { $ref: '#/components/responses/Error401' }
+        '429': { $ref: '#/components/responses/Error429' }
+  /eventos:
+    get:
+      tags: [Eventos]
+      summary: Consulta eventos con filtros y paginación por cursor (máx. 31 días)
+      parameters:
+        - { name: desde, in: query, schema: { type: string, format: date-time } }
+        - { name: hasta, in: query, schema: { type: string, format: date-time } }
+        - { name: id_categoria, in: query, schema: { type: integer } }
+        - { name: id_activo, in: query, schema: { type: integer } }
+        - { name: ip, in: query, schema: { type: string } }
+        - { name: antes_de, in: query, description: Cursor (id_evento), schema: { type: string } }
+        - { name: limite, in: query, schema: { type: integer, default: 50, maximum: 200 } }
+      responses: { '200': { description: 'Eventos y siguiente_cursor' } }
+  /activos:
+    get: { tags: [Activos], summary: Lista activos (cliente - solo los propios), responses: { '200': { description: Activos } } }
+    post:
+      tags: [Activos]
+      summary: Registra un activo y devuelve su API key una sola vez (solo cliente)
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/Activo' } } } }
+      responses: { '201': { description: Creado }, '400': { $ref: '#/components/responses/Error400' }, '403': { $ref: '#/components/responses/Error403' } }
+  /activos/{id}:
+    put:
+      tags: [Activos]
+      summary: Edita un activo propio
+      parameters: [ { name: id, in: path, required: true, schema: { type: integer } } ]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/Activo' } } } }
+      responses: { '200': { description: Actualizado }, '404': { description: No encontrado } }
+  /activos/{id}/estado:
+    patch:
+      tags: [Activos]
+      summary: Habilita o deshabilita un activo
+      parameters: [ { name: id, in: path, required: true, schema: { type: integer } } ]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, properties: { activo: { type: boolean } } } } } }
+      responses: { '200': { description: Actualizado } }
+  /activos/{id}/rotar-clave:
+    post:
+      tags: [Activos]
+      summary: Genera una nueva API key e invalida la anterior
+      parameters: [ { name: id, in: path, required: true, schema: { type: integer } } ]
+      responses: { '200': { description: Nueva clave } }
+  /alertas:
+    get:
+      tags: [Alertas]
+      summary: Lista alertas paginadas
+      parameters:
+        - { name: estado, in: query, schema: { type: string, enum: [abierta, en_revision, resuelta, falso_positivo] } }
+        - { name: severidad, in: query, schema: { $ref: '#/components/schemas/Severidad' } }
+        - { name: pagina, in: query, schema: { type: integer, default: 1 } }
+      responses: { '200': { description: Alertas } }
+  /alertas/{id}:
+    patch:
+      tags: [Alertas]
+      summary: Gestiona una alerta (solo administrador)
+      parameters: [ { name: id, in: path, required: true, schema: { type: integer } } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                estado: { type: string, enum: [abierta, en_revision, resuelta, falso_positivo] }
+                id_responsable: { type: integer }
+                nota_resolucion: { type: string }
+      responses: { '200': { description: Actualizada }, '403': { $ref: '#/components/responses/Error403' } }
+  /incidentes:
+    get: { tags: [Incidentes], summary: Lista incidentes, responses: { '200': { description: Incidentes } } }
+    post:
+      tags: [Incidentes]
+      summary: Reporta un incidente (solo cliente)
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/Incidente' } } } }
+      responses: { '201': { description: Reportado }, '400': { $ref: '#/components/responses/Error400' } }
+  /incidentes/{id}:
+    patch:
+      tags: [Incidentes]
+      summary: Actualiza estado y respuesta (solo administrador)
+      parameters: [ { name: id, in: path, required: true, schema: { type: integer } } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                estado: { type: string, enum: [reportado, en_analisis, contenido, cerrado] }
+                respuesta_analista: { type: string }
+      responses: { '200': { description: Actualizado } }
+  /panel/resumen:
+    get: { tags: [Panel], summary: Indicadores agregados de las últimas 24 horas, responses: { '200': { description: Resumen } } }
+  /catalogos:
+    get: { tags: [Panel], summary: Tipos de activo, categorías, severidades y estados, responses: { '200': { description: Catálogos } } }
+  /admin/reglas:
+    get: { tags: [Administración], summary: Lista reglas de detección, responses: { '200': { description: Reglas } } }
+    post:
+      tags: [Administración]
+      summary: Crea una regla de detección
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/Regla' } } } }
+      responses: { '201': { description: Creada } }
+  /admin/reglas/{id}:
+    put:
+      tags: [Administración]
+      summary: Edita una regla
+      parameters: [ { name: id, in: path, required: true, schema: { type: integer } } ]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/Regla' } } } }
+      responses: { '200': { description: Actualizada } }
+  /admin/usuarios:
+    get: { tags: [Administración], summary: Lista usuarios, responses: { '200': { description: Usuarios } } }
+  /admin/usuarios/{id}:
+    patch:
+      tags: [Administración]
+      summary: Activa, desactiva o desbloquea un usuario
+      parameters: [ { name: id, in: path, required: true, schema: { type: integer } } ]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, properties: { activo: { type: boolean }, desbloquear: { type: boolean } } } } } }
+      responses: { '200': { description: Actualizado } }
+  /admin/organizaciones:
+    get: { tags: [Administración], summary: Lista organizaciones, responses: { '200': { description: Organizaciones } } }
+  /admin/auditoria:
+    get: { tags: [Administración], summary: Últimos 200 registros de auditoría, responses: { '200': { description: Registros } } }
