@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SentinelaPyME: centralización y análisis en tiempo real de eventos de seguridad para pymes.">
+  <title>Registrar empresa · SentinelaPyME</title>
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="acceso">
+  <aside class="acceso__lado">
+    <a class="marca" href="/"><img src="/img/logo.svg" alt=""><span>Sentinela<em>PyME</em></span></a>
+    <h2>Seguridad basada en datos para tu pyme</h2>
+    <p>Centraliza los registros de tus servidores, firewalls y aplicaciones web, y recibe alertas en tiempo real cuando se detecta un ataque.</p>
+    <ul>
+      <li>Detección automática de fuerza bruta, escaneos e inyección SQL</li>
+      <li>Panel de indicadores actualizado en vivo</li>
+      <li>Reporte y seguimiento de incidentes con analistas</li>
+      <li>Datos cifrados en tránsito y contraseñas protegidas con bcrypt</li>
+    </ul>
+  </aside>
+  <main class="acceso__principal" id="contenido">
+    <div class="acceso__tarjeta acceso__tarjeta--ancha">
+      <a class="acceso__marca" href="/"><img src="/img/logo.svg" alt="">SentinelaPyME</a>
+      <div class="tarjeta">
+        <h1>Registrar mi empresa</h1>
+        <p class="texto-suave">Cree la cuenta de su pyme. Usted quedará como usuario cliente de la organización.</p>
+        <form id="form-registro" class="formulario" autocomplete="on">
+          <div class="aviso" role="alert"></div>
+          <fieldset class="formulario__grilla grupo-campos">
+            <legend class="sr-only">Datos de la empresa</legend>
+            <div class="campo">
+              <label for="rut">RUT de la empresa</label>
+              <input id="rut" name="rut" required maxlength="12" placeholder="76.543.210-3" pattern="[0-9.]{7,10}-?[0-9kK]" data-mensaje="Ingrese un RUT válido (ej.: 76.543.210-3).">
+            </div>
+            <div class="campo">
+              <label for="rubro">Rubro</label>
+              <input id="rubro" name="rubro" required minlength="3" maxlength="80" placeholder="Comercio, salud, logística…" data-mensaje="Indique el rubro (mínimo 3 caracteres).">
+            </div>
+            <div class="campo campo--completo">
+              <label for="razon_social">Razón social</label>
+              <input id="razon_social" name="razon_social" required minlength="3" maxlength="150" autocomplete="organization" data-mensaje="Ingrese la razón social.">
+            </div>
+          </fieldset>
+          <fieldset class="formulario__grilla grupo-campos">
+            <legend class="sr-only">Datos del usuario</legend>
+            <div class="campo">
+              <label for="nombre">Nombre</label>
+              <input id="nombre" name="nombre" required minlength="2" maxlength="60" autocomplete="given-name" data-mensaje="Ingrese su nombre.">
+            </div>
+            <div class="campo">
+              <label for="apellido">Apellido</label>
+              <input id="apellido" name="apellido" required minlength="2" maxlength="60" autocomplete="family-name" data-mensaje="Ingrese su apellido.">
+            </div>
+            <div class="campo campo--completo">
+              <label for="email">Correo electrónico</label>
+              <input id="email" name="email" type="email" required maxlength="254" autocomplete="email" data-mensaje="Ingrese un correo válido.">
+            </div>
+            <div class="campo">
+              <label for="password">Contraseña</label>
+              <input id="password" name="password" type="password" required minlength="10" maxlength="64" autocomplete="new-password" data-mensaje="Mínimo 10 caracteres.">
+            </div>
+            <div class="campo">
+              <label for="confirmacion">Confirmar contraseña</label>
+              <input id="confirmacion" name="confirmacion" type="password" required maxlength="64" autocomplete="new-password" data-mensaje="Repita la contraseña.">
+            </div>
+          </fieldset>
+          <div class="campo">
+            <label class="casilla"><input type="checkbox" name="acepto" required data-mensaje="Debe aceptar el tratamiento de datos."> Acepto el tratamiento de mis datos personales conforme a la Ley N.º 19.628 y la Ley N.º 21.719.</label>
+          </div>
+          <button class="btn btn--bloque" type="submit">Crear cuenta</button>
+        </form>
+        <div class="acceso__enlaces"><a href="/login.html">Ya tengo una cuenta</a></div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="/js/core.js"></script>
+<script src="/js/pages/registro.js"></script>
+</body>
+</html>

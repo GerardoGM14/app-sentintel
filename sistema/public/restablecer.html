@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SentinelaPyME: centralización y análisis en tiempo real de eventos de seguridad para pymes.">
+  <title>Restablecer contraseña · SentinelaPyME</title>
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="acceso">
+  <aside class="acceso__lado">
+    <a class="marca" href="/"><img src="/img/logo.svg" alt=""><span>Sentinela<em>PyME</em></span></a>
+    <h2>Seguridad basada en datos para tu pyme</h2>
+    <p>Centraliza los registros de tus servidores, firewalls y aplicaciones web, y recibe alertas en tiempo real cuando se detecta un ataque.</p>
+    <ul>
+      <li>Detección automática de fuerza bruta, escaneos e inyección SQL</li>
+      <li>Panel de indicadores actualizado en vivo</li>
+      <li>Reporte y seguimiento de incidentes con analistas</li>
+      <li>Datos cifrados en tránsito y contraseñas protegidas con bcrypt</li>
+    </ul>
+  </aside>
+  <main class="acceso__principal" id="contenido">
+    <div class="acceso__tarjeta">
+      <a class="acceso__marca" href="/"><img src="/img/logo.svg" alt="">SentinelaPyME</a>
+      <div class="tarjeta">
+        <h1>Crear nueva contraseña</h1>
+        <p class="texto-suave">Por seguridad, al cambiarla se cerrarán todas las sesiones abiertas.</p>
+        <form id="form-restablecer" class="formulario">
+          <div class="aviso" role="alert"></div>
+          <input type="hidden" name="token">
+          <div class="campo">
+            <label for="password">Nueva contraseña</label>
+            <input id="password" name="password" type="password" required minlength="10" maxlength="64" autocomplete="new-password" data-mensaje="Mínimo 10 caracteres.">
+          </div>
+          <div class="campo">
+            <label for="confirmacion">Confirmar contraseña</label>
+            <input id="confirmacion" name="confirmacion" type="password" required maxlength="64" autocomplete="new-password" data-mensaje="Repita la contraseña.">
+          </div>
+          <button class="btn btn--bloque" type="submit">Guardar contraseña</button>
+        </form>
+        <div class="acceso__enlaces"><a href="/recuperar.html">Solicitar un nuevo enlace</a></div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="/js/core.js"></script>
+<script src="/js/pages/restablecer.js"></script>
+</body>
+</html>
