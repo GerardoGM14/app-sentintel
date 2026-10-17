@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SentinelaPyME: centralización y análisis en tiempo real de eventos de seguridad para pymes.">
+  <title>Panel · SentinelaPyME</title>
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-pagina="panel">
+<main class="contenido" id="contenido" tabindex="-1">
+  <div class="encabezado-pagina">
+    <h1 id="titulo-panel">Panel de seguridad</h1><p>Actividad de las últimas 24 horas. Los indicadores se actualizan en tiempo real.</p>
+  </div>
+  <section class="kpis" aria-label="Indicadores principales">
+    <div class="tarjeta kpi" id="kpi-eventos"><div class="kpi__valor" data-kpi="eventos_24h">—</div><div class="kpi__etiqueta">Eventos (24 h)</div></div>
+    <div class="tarjeta kpi kpi--alerta" id="kpi-alertas"><div class="kpi__valor" data-kpi="alertas_abiertas">—</div><div class="kpi__etiqueta">Alertas abiertas</div></div>
+    <div class="tarjeta kpi kpi--incidente"><div class="kpi__valor" data-kpi="incidentes_abiertos">—</div><div class="kpi__etiqueta">Incidentes en curso</div></div>
+    <div class="tarjeta kpi kpi--activo"><div class="kpi__valor" data-kpi="activos">—</div><div class="kpi__etiqueta">Activos monitoreados</div></div>
+  </section>
+  <div class="grilla grilla--2 mt">
+    <section class="tarjeta">
+      <div class="tarjeta__titulo"><h2>Eventos por hora</h2><span class="texto-suave texto-chico">Últimas 24 horas</span></div>
+      <div id="grafico-horas" role="img" aria-label="Gráfico de barras de eventos por hora"></div>
+    </section>
+    <section class="tarjeta">
+      <div class="tarjeta__titulo"><h2>Actividad en vivo</h2><span class="texto-suave texto-chico" id="contador-vivo">0 eventos recibidos</span></div>
+      <ul class="feed" id="feed" aria-live="polite"><li class="texto-suave">Esperando eventos de los agentes…</li></ul>
+    </section>
+  </div>
+  <div class="grilla grilla--mitad mt">
+    <section class="tarjeta">
+      <div class="tarjeta__titulo"><h2>Eventos por categoría (24 h)</h2></div>
+      <div id="categorias" class="barras-h"></div>
+    </section>
+    <section class="tarjeta">
+      <div class="tarjeta__titulo"><h2>IP de origen más sospechosas</h2></div>
+      <div class="tabla-contenedor"><table class="tabla"><thead><tr><th>IP</th><th>Eventos de riesgo</th></tr></thead><tbody id="top-ips"></tbody></table></div>
+      <div class="tarjeta__titulo mt"><h2>Alertas abiertas por severidad</h2></div>
+      <div id="alertas-severidad" class="barras-h"></div>
+    </section>
+  </div>
+</main>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/core.js"></script>
+<script src="/js/pages/panel.js"></script>
+</body>
+</html>
