@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SentinelaPyME: centralización y análisis en tiempo real de eventos de seguridad para pymes.">
+  <title>Activos · SentinelaPyME</title>
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-pagina="activos">
+<main class="contenido" id="contenido" tabindex="-1">
+  <div class="encabezado-pagina fila-entre">
+    <div><h1>Activos monitoreados</h1><p>Servidores, equipos y aplicaciones que envían eventos mediante un agente con API key.</p></div>
+    <button class="btn oculto" id="btn-nuevo" type="button">+ Registrar activo</button>
+  </div>
+  <div class="tabla-contenedor">
+    <table class="tabla tabla--apilable">
+      <thead><tr><th>Nombre</th><th>Tipo</th><th>Organización</th><th>IP</th><th>Criticidad</th><th>Clave</th><th>Alertas abiertas</th><th>Estado</th><th><span class="sr-only">Acciones</span></th></tr></thead>
+      <tbody id="tabla-activos"><tr><td class="vacio" colspan="9">Cargando…</td></tr></tbody>
+    </table>
+  </div>
+  <section class="tarjeta oculto mt" id="ayuda-agente">
+    <h2>¿Cómo envía eventos un agente?</h2>
+    <p class="texto-suave">Cada activo envía lotes de eventos por HTTPS a la API REST, autenticándose con su API key:</p>
+    <pre class="clave-api">POST /api/v1/ingesta/eventos
+X-API-Key: sp_xxxxxxxx_…
+Content-Type: application/json
+
+{ "eventos": [ { "categoria": "AUTH_FALLIDA", "ip_origen": "181.43.2.10", "usuario_objetivo": "admin" } ] }</pre>
+  </section>
+</main>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/core.js"></script>
+<script src="/js/pages/activos.js"></script>
+</body>
+</html>

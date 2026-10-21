@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SentinelaPyME: centralización y análisis en tiempo real de eventos de seguridad para pymes.">
+  <title>Alertas · SentinelaPyME</title>
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-pagina="alertas">
+<main class="contenido" id="contenido" tabindex="-1">
+  <div class="encabezado-pagina">
+    <h1>Alertas de seguridad</h1><p>Generadas automáticamente por el motor de correlación cuando un patrón supera el umbral de una regla.</p>
+  </div>
+  <form id="form-filtros" class="filtros" aria-label="Filtros de alertas">
+    <div class="campo"><label for="estado">Estado</label><select id="estado" name="estado"></select></div>
+    <div class="campo"><label for="severidad">Severidad</label><select id="severidad" name="severidad"></select></div>
+    <div class="acciones"><button class="btn" type="submit">Filtrar</button></div>
+  </form>
+  <div class="tabla-contenedor mt">
+    <table class="tabla tabla--apilable">
+      <thead><tr><th>#</th><th>Regla</th><th>Severidad</th><th>Activo</th><th>IP origen</th><th>Eventos</th><th>Generada</th><th>Estado</th><th>Responsable</th><th><span class="sr-only">Acciones</span></th></tr></thead>
+      <tbody id="tabla-alertas"><tr><td class="vacio" colspan="10">Cargando…</td></tr></tbody>
+    </table>
+  </div>
+  <div class="paginacion" id="paginacion"></div>
+</main>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/core.js"></script>
+<script src="/js/pages/alertas.js"></script>
+</body>
+</html>
