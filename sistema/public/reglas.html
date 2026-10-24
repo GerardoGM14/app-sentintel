@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SentinelaPyME: centralización y análisis en tiempo real de eventos de seguridad para pymes.">
+  <title>Reglas de detección · SentinelaPyME</title>
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-pagina="reglas">
+<main class="contenido" id="contenido" tabindex="-1">
+  <div class="encabezado-pagina fila-entre">
+    <div><h1>Reglas de detección</h1><p>Definen cuántos eventos de una categoría, desde una misma IP y en una ventana de tiempo, generan una alerta.</p></div>
+    <button class="btn" id="btn-nueva" type="button">+ Nueva regla</button>
+  </div>
+  <div class="tabla-contenedor">
+    <table class="tabla tabla--apilable">
+      <thead><tr><th>Nombre</th><th>Categoría</th><th>Condición</th><th>Severidad</th><th>Alertas generadas</th><th>Estado</th><th><span class="sr-only">Acciones</span></th></tr></thead>
+      <tbody id="tabla-reglas"><tr><td class="vacio" colspan="7">Cargando…</td></tr></tbody>
+    </table>
+  </div>
+</main>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/core.js"></script>
+<script src="/js/pages/reglas.js"></script>
+</body>
+</html>

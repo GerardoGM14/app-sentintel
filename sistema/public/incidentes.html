@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SentinelaPyME: centralización y análisis en tiempo real de eventos de seguridad para pymes.">
+  <title>Incidentes · SentinelaPyME</title>
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-pagina="incidentes">
+<main class="contenido" id="contenido" tabindex="-1">
+  <div class="encabezado-pagina fila-entre">
+    <div><h1>Incidentes</h1><p id="descripcion-incidentes">Reportes de incidentes de seguridad y su seguimiento por parte de los analistas.</p></div>
+    <button class="btn oculto" id="btn-reportar" type="button">+ Reportar incidente</button>
+  </div>
+  <div class="pestanas" role="tablist" id="pestanas"></div>
+  <div class="tabla-contenedor">
+    <table class="tabla tabla--apilable">
+      <thead><tr><th>#</th><th>Título</th><th>Organización</th><th>Activo</th><th>Severidad</th><th>Estado</th><th>Reportado</th><th><span class="sr-only">Acciones</span></th></tr></thead>
+      <tbody id="tabla-incidentes"><tr><td class="vacio" colspan="8">Cargando…</td></tr></tbody>
+    </table>
+  </div>
+</main>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/core.js"></script>
+<script src="/js/pages/incidentes.js"></script>
+</body>
+</html>

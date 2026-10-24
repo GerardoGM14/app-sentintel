@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SentinelaPyME: centralización y análisis en tiempo real de eventos de seguridad para pymes.">
+  <title>Mi perfil · SentinelaPyME</title>
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-pagina="perfil">
+<main class="contenido" id="contenido" tabindex="-1">
+  <div class="encabezado-pagina"><h1>Mi perfil</h1><p>Actualice sus datos personales y su contraseña.</p></div>
+  <div class="grilla grilla--mitad">
+    <section class="tarjeta">
+      <h2>Datos personales</h2>
+      <form id="form-perfil" class="formulario">
+        <div class="aviso" role="alert"></div>
+        <div class="formulario__grilla">
+          <div class="campo"><label for="nombre">Nombre</label><input id="nombre" name="nombre" required minlength="2" maxlength="60" autocomplete="given-name"></div>
+          <div class="campo"><label for="apellido">Apellido</label><input id="apellido" name="apellido" required minlength="2" maxlength="60" autocomplete="family-name"></div>
+          <div class="campo campo--completo"><label for="email">Correo electrónico</label><input id="email" name="email" type="email" required maxlength="254" autocomplete="email"></div>
+        </div>
+        <p class="texto-suave texto-chico" id="datos-organizacion"></p>
+        <div><button class="btn" type="submit">Guardar cambios</button></div>
+      </form>
+    </section>
+    <section class="tarjeta">
+      <h2>Cambiar contraseña</h2>
+      <form id="form-password" class="formulario">
+        <div class="aviso" role="alert"></div>
+        <div class="campo"><label for="actual">Contraseña actual</label><input id="actual" name="actual" type="password" required maxlength="64" autocomplete="current-password" data-mensaje="Ingrese su contraseña actual."></div>
+        <div class="campo"><label for="password">Nueva contraseña</label><input id="password" name="password" type="password" required minlength="10" maxlength="64" autocomplete="new-password" data-mensaje="Mínimo 10 caracteres."></div>
+        <div class="campo"><label for="confirmacion">Confirmar nueva contraseña</label><input id="confirmacion" name="confirmacion" type="password" required maxlength="64" autocomplete="new-password" data-mensaje="Repita la contraseña."></div>
+        <div><button class="btn" type="submit">Actualizar contraseña</button></div>
+      </form>
+    </section>
+  </div>
+</main>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/core.js"></script>
+<script src="/js/pages/perfil.js"></script>
+</body>
+</html>

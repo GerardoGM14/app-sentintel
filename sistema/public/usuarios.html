@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SentinelaPyME: centralización y análisis en tiempo real de eventos de seguridad para pymes.">
+  <title>Usuarios y auditoría · SentinelaPyME</title>
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-pagina="usuarios">
+<main class="contenido" id="contenido" tabindex="-1">
+  <div class="encabezado-pagina">
+    <h1>Usuarios, organizaciones y auditoría</h1><p>Gestión de cuentas y trazabilidad de las acciones realizadas en la plataforma.</p>
+  </div>
+  <div class="pestanas" role="tablist">
+    <button class="pestana" role="tab" aria-selected="true" aria-controls="panel-usuarios" id="tab-usuarios" type="button">Usuarios</button>
+    <button class="pestana" role="tab" aria-selected="false" aria-controls="panel-organizaciones" id="tab-organizaciones" type="button">Organizaciones</button>
+    <button class="pestana" role="tab" aria-selected="false" aria-controls="panel-auditoria" id="tab-auditoria" type="button">Auditoría</button>
+  </div>
+  <section id="panel-usuarios" role="tabpanel" aria-labelledby="tab-usuarios">
+    <div class="tabla-contenedor"><table class="tabla tabla--apilable">
+      <thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Organización</th><th>Último acceso</th><th>Estado</th><th><span class="sr-only">Acciones</span></th></tr></thead>
+      <tbody id="tabla-usuarios"></tbody></table></div>
+  </section>
+  <section id="panel-organizaciones" role="tabpanel" aria-labelledby="tab-organizaciones" class="oculto">
+    <div class="tabla-contenedor"><table class="tabla tabla--apilable">
+      <thead><tr><th>RUT</th><th>Razón social</th><th>Rubro</th><th>Usuarios</th><th>Activos</th><th>Registro</th></tr></thead>
+      <tbody id="tabla-organizaciones"></tbody></table></div>
+  </section>
+  <section id="panel-auditoria" role="tabpanel" aria-labelledby="tab-auditoria" class="oculto">
+    <div class="tabla-contenedor"><table class="tabla tabla--apilable">
+      <thead><tr><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Entidad</th><th>IP</th></tr></thead>
+      <tbody id="tabla-auditoria"></tbody></table></div>
+  </section>
+</main>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/core.js"></script>
+<script src="/js/pages/usuarios.js"></script>
+</body>
+</html>
