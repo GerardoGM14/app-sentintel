@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>Arquitectura</title>
+<style>
+  body{margin:0;background:#fff;font-family:Arial,Helvetica,sans-serif;color:#0d1b2e}
+  #d{width:1100px;padding:20px;box-sizing:border-box}
+  .capa{display:grid;grid-template-columns:190px 1fr;gap:14px;margin-bottom:12px;align-items:stretch}
+  .nombre{background:#0d1b2e;color:#fff;border-radius:8px;padding:12px;font-weight:bold;font-size:15px;display:flex;flex-direction:column;justify-content:center}
+  .nombre small{font-weight:normal;color:#9fc3d4;font-size:12px;margin-top:4px}
+  .cont{border:2px solid #0b6e86;border-radius:8px;padding:10px;display:flex;gap:10px;flex-wrap:wrap;background:#f4fafc}
+  .c{flex:1 1 150px;background:#fff;border:1px solid #9bc7d4;border-radius:6px;padding:8px 10px;font-size:13px}
+  .c b{display:block;font-size:13.5px;color:#08566a;margin-bottom:3px}
+  .flecha{text-align:center;font-size:12.5px;color:#334155;margin:-4px 0 8px 204px}
+  .flecha span{background:#fff3c4;border:1px solid #e7c96a;border-radius:4px;padding:2px 8px}
+  .seg{border-color:#c2410c;background:#fff7f2}
+  .seg .c{border-color:#f0b48f}
+  .seg .c b{color:#9a3412}
+</style></head><body><div id="d">
+  <div class="capa"><div class="nombre">1. Presentación<small>Navegador web (cliente y analista)</small></div>
+    <div class="cont">
+      <div class="c"><b>HTML5 semántico</b>13 páginas estáticas, formularios accesibles</div>
+      <div class="c"><b>CSS propio responsive</b>Variables CSS, Grid/Flexbox, mobile-first</div>
+      <div class="c"><b>JavaScript estándar</b>fetch(), DOM seguro, gráficos SVG</div>
+      <div class="c"><b>Cliente Socket.IO</b>Notificaciones y panel en vivo</div>
+    </div></div>
+  <div class="flecha"><span>HTTPS (TLS 1.2/1.3) · JSON · cookie JWT HttpOnly · WebSocket seguro (wss)</span></div>
+  <div class="capa"><div class="nombre">2. Seguridad perimetral<small>Middleware transversal</small></div>
+    <div class="cont seg">
+      <div class="c"><b>Helmet</b>CSP, HSTS, X-Frame, nosniff, Referrer-Policy</div>
+      <div class="c"><b>Rate limiting</b>Login, registro, recuperación e ingesta por API key</div>
+      <div class="c"><b>Autenticación</b>JWT HS256 · API key SHA-256</div>
+      <div class="c"><b>Autorización RBAC</b>administrador / cliente + aislamiento por organización</div>
+      <div class="c"><b>Validación</b>Esquemas zod (lista blanca) · verificación de Origin</div>
+    </div></div>
+  <div class="capa"><div class="nombre">3. Aplicación / API REST<small>Node.js 22 + Express 4 (sin estado)</small></div>
+    <div class="cont">
+      <div class="c"><b>/auth · /perfil</b>Registro, login, recuperación por correo, cambio de contraseña</div>
+      <div class="c"><b>/ingesta</b>Recepción masiva de lotes desde agentes</div>
+      <div class="c"><b>/eventos · /panel</b>Consultas filtradas, agregaciones</div>
+      <div class="c"><b>/activos · /alertas · /incidentes</b>Gestión del dominio</div>
+      <div class="c"><b>/admin</b>Reglas, usuarios, organizaciones, auditoría</div>
+    </div></div>
+  <div class="capa"><div class="nombre">4. Servicios<small>Lógica de negocio</small></div>
+    <div class="cont">
+      <div class="c"><b>Motor de correlación</b>Reglas umbral/ventana, deduplicación de alertas</div>
+      <div class="c"><b>Tiempo real</b>Servidor Socket.IO con salas por organización</div>
+      <div class="c"><b>Correo</b>Nodemailer sobre SMTP con STARTTLS</div>
+      <div class="c"><b>Auditoría y criptografía</b>bcrypt, SHA-256, tokens aleatorios</div>
+    </div></div>
+  <div class="flecha"><span>Protocolo PostgreSQL · consultas parametrizadas · pool de conexiones · TLS en hosting</span></div>
+  <div class="capa"><div class="nombre">5. Datos<small>PostgreSQL 16</small></div>
+    <div class="cont">
+      <div class="c"><b>Modelo relacional 3FN</b>12 tablas, claves foráneas y CHECK</div>
+      <div class="c"><b>eventos particionada</b>Por rango mensual · índices B-tree y BRIN</div>
+      <div class="c"><b>JSONB</b>Carga útil semiestructurada de los agentes</div>
+      <div class="c"><b>Transacciones ACID</b>Registro, recuperación y cambios críticos</div>
+    </div></div>
+</div></body></html>

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>Particiones</title>
+<style>
+  body{margin:0;background:#fff;font-family:Arial,Helvetica,sans-serif;color:#0d1b2e}
+  #d{width:1000px;padding:20px;box-sizing:border-box}
+  .padre{margin:0 auto 14px;width:520px;text-align:center;background:#0d1b2e;color:#fff;border-radius:8px;padding:10px;font-size:14px}
+  .padre small{display:block;color:#9fc3d4;font-size:12px}
+  .hijos{display:flex;gap:10px}
+  .p{flex:1;border:2px solid #0b6e86;background:#e2f3f7;border-radius:8px;padding:8px;font-size:12.5px;text-align:center}
+  .p b{display:block;font-size:13px}
+  .p.podada{opacity:.35;border-style:dashed}
+  .p.leida{background:#fff3c4;border-color:#a16207}
+  .q{margin-top:14px;font-family:Consolas,monospace;font-size:13px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:6px;padding:10px}
+  .nota{font-size:12.5px;margin-top:8px;color:#334155}
+</style></head><body><div id="d">
+  <div class="padre"><b>eventos</b> (tabla padre: PARTITION BY RANGE (fecha_evento))<small>Índices declarados en el padre se crean en cada partición: B-tree (activo, categoría, IP, fecha) y BRIN (fecha)</small></div>
+  <div class="hijos">
+    <div class="p podada"><b>eventos_2026_09</b>sep 2026<br>podada</div>
+    <div class="p podada"><b>eventos_2026_10</b>oct 2026<br>podada</div>
+    <div class="p leida"><b>eventos_2026_11</b>nov 2026<br>leída</div>
+    <div class="p"><b>eventos_2026_12</b>dic 2026<br>vacía</div>
+    <div class="p"><b>eventos_2027_01</b>ene 2027<br>vacía</div>
+    <div class="p"><b>eventos_2027_02</b>feb 2027<br>vacía</div>
+  </div>
+  <div class="q">SELECT count(*) FROM eventos WHERE fecha_evento &gt;= now() - interval '1 day';<br>→ Append · <b>Subplans Removed: 2</b> · Bitmap Index Scan on eventos_2026_11_fecha_evento_idx</div>
+  <div class="nota">El servidor crea automáticamente las particiones de los meses siguientes (función crear_particion_eventos). Las particiones antiguas pueden desacoplarse (DETACH) y archivarse sin bloquear la tabla.</div>
+</div></body></html>

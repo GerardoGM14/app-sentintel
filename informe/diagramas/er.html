@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>MER</title>
+<style>body{margin:0;background:#fff;font-family:Arial,sans-serif}#d{padding:16px;display:inline-block}</style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+</head><body><div id="d"><pre class="mermaid">
+erDiagram
+  ROLES ||--o{ USUARIOS : "asigna"
+  ORGANIZACIONES ||--o{ USUARIOS : "agrupa"
+  ORGANIZACIONES ||--o{ ACTIVOS : "posee"
+  TIPOS_ACTIVO ||--o{ ACTIVOS : "clasifica"
+  USUARIOS ||--o{ TOKENS_RECUPERACION : "solicita"
+  USUARIOS ||--o{ AUDITORIA : "ejecuta"
+  ACTIVOS ||--o{ EVENTOS : "genera"
+  CATEGORIAS_EVENTO ||--o{ EVENTOS : "tipifica"
+  CATEGORIAS_EVENTO ||--o{ REGLAS_DETECCION : "evalua"
+  USUARIOS |o--o{ REGLAS_DETECCION : "crea"
+  REGLAS_DETECCION ||--o{ ALERTAS : "dispara"
+  ACTIVOS ||--o{ ALERTAS : "afecta"
+  USUARIOS |o--o{ ALERTAS : "gestiona"
+  USUARIOS ||--o{ INCIDENTES : "reporta"
+  USUARIOS |o--o{ INCIDENTES : "atiende"
+  ACTIVOS |o--o{ INCIDENTES : "involucra"
+  CATEGORIAS_EVENTO |o--o{ INCIDENTES : "clasifica"
+
+  ROLES {
+    smallint id_rol PK
+    varchar nombre UK
+    varchar descripcion
+  }
+  ORGANIZACIONES {
+    serial id_organizacion PK
+    varchar rut UK
+    varchar razon_social
+    varchar rubro
+    timestamptz fecha_registro
+  }
+  USUARIOS {
+    serial id_usuario PK
+    smallint id_rol FK
+    int id_organizacion FK
+    varchar nombre
+    varchar apellido
+    varchar email UK
+    char password_hash "bcrypt"
+    boolean activo
+    smallint intentos_fallidos
+    timestamptz bloqueado_hasta
+    int version_token
+    timestamptz fecha_creacion
+    timestamptz ultimo_acceso
+  }
+  TOKENS_RECUPERACION {
+    serial id_token PK
+    int id_usuario FK
+    char token_hash UK "SHA-256"
+    timestamptz fecha_creacion
+    timestamptz fecha_expiracion
+    timestamptz fecha_uso
+  }
+  AUDITORIA {
+    bigserial id_auditoria PK
+    int id_usuario FK
+    varchar accion
+    varchar entidad
+    varchar id_entidad
+    inet ip
+    jsonb detalle
+    timestamptz fecha
+  }
+  TIPOS_ACTIVO {
+    smallserial id_tipo_activo PK
+    varchar nombre UK
+    varchar descripcion
+  }
+  ACTIVOS {
+    serial id_activo PK
+    int id_organizacion FK
+    smallint id_tipo_activo FK
+    varchar nombre
+    inet direccion_ip
+    varchar criticidad
+    char api_key_prefijo UK
+    char api_key_hash UK "SHA-256"
+    boolean activo
+    timestamptz fecha_registro
+  }
+  CATEGORIAS_EVENTO {
+    smallserial id_categoria PK
+    varchar codigo UK
+    varchar nombre
+    varchar descripcion
+    varchar severidad_base
+  }
+  EVENTOS {
+    bigint id_evento PK
+    timestamptz fecha_evento PK "clave de particion"
+    timestamptz fecha_recepcion
+    int id_activo FK
+    smallint id_categoria FK
+    inet ip_origen
+    varchar usuario_objetivo
+    varchar mensaje
+    jsonb datos
+  }
+  REGLAS_DETECCION {
+    serial id_regla PK
+    smallint id_categoria FK
+    int id_creador FK
+    varchar nombre UK
+    varchar descripcion
+    int umbral
+    int ventana_minutos
+    varchar severidad
+    boolean activa
+    timestamptz fecha_creacion
+  }
+  ALERTAS {
+    serial id_alerta PK
+    int id_regla FK
+    int id_activo FK
+    int id_responsable FK
+    inet ip_origen
+    int cantidad_eventos
+    timestamptz fecha_primer_evento
+    timestamptz fecha_ultimo_evento
+    timestamptz fecha_generada
+    varchar estado
+    varchar nota_resolucion
+    timestamptz fecha_cierre
+  }
+  INCIDENTES {
+    serial id_incidente PK
+    int id_reportado_por FK
+    int id_activo FK
+    smallint id_categoria FK
+    int id_responsable FK
+    varchar titulo
+    varchar descripcion
+    varchar severidad
+    varchar estado
+    varchar respuesta_analista
+    timestamptz fecha_reporte
+    timestamptz fecha_actualizacion
+  }
+</pre></div>
+<script>
+mermaid.initialize({ startOnLoad: true, theme: 'base', er: { useMaxWidth: false, layoutDirection: 'TB', fontSize: 14, minEntityWidth: 120 },
+  themeVariables: { fontFamily: 'Arial', primaryColor: '#e2f3f7', primaryBorderColor: '#0b6e86', lineColor: '#334155', primaryTextColor: '#0d1b2e', tertiaryColor: '#ffffff' } });
+</script>
+</body></html>

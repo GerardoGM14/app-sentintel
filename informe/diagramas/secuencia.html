@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>Secuencia</title>
+<style>body{margin:0;background:#fff;font-family:Arial,sans-serif}#d{padding:12px;display:inline-block}</style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+</head><body><div id="d"><pre class="mermaid">
+sequenceDiagram
+  autonumber
+  participant AG as Agente
+  participant API as API REST
+  participant DB as PostgreSQL
+  participant DET as Correlación
+  participant WS as Socket.IO
+  participant UI as Navegador
+  AG->>API: POST /ingesta/eventos<br/>X-API-Key + lote ≤ 500
+  API->>API: Rate limit y<br/>validación (zod)
+  API->>DB: Verifica hash<br/>de la API key
+  API->>DB: INSERT … UNNEST<br/>(partición del mes)
+  API->>DET: Grupos<br/>(categoría, IP)
+  DET->>DB: Reglas activas y<br/>COUNT en ventana
+  alt Umbral superado
+    DET->>DB: INSERT alerta
+    DET->>WS: alerta:nueva
+    WS-->>UI: Notificación<br/>en vivo
+  else Alerta abierta
+    DET->>DB: UPDATE alerta
+  end
+  API->>WS: eventos:recibidos
+  API-->>AG: 202 Accepted
+</pre></div>
+<script>
+mermaid.initialize({ startOnLoad: true, theme: 'base', sequence: { useMaxWidth: false, mirrorActors: false, width: 130, actorMargin: 40, boxMargin: 8, messageMargin: 30, actorFontFamily: 'Arial', messageFontFamily: 'Arial', noteFontFamily: 'Arial', messageFontSize: 17, actorFontSize: 17 },
+  themeVariables: { fontFamily: 'Arial', fontSize: '17px', primaryColor: '#e2f3f7', primaryBorderColor: '#0b6e86', lineColor: '#334155', actorBkg: '#e2f3f7', actorBorder: '#0b6e86', signalColor: '#0d1b2e' } });
+</script>
+</body></html>

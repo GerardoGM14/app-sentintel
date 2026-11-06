@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>Despliegue</title>
+<style>
+  body{margin:0;background:#fff;font-family:Arial,Helvetica,sans-serif;color:#0d1b2e}
+  #d{width:1100px;padding:20px;box-sizing:border-box}
+  .fila{display:flex;gap:16px;align-items:stretch}
+  .zona{border:2px dashed #64748b;border-radius:10px;padding:12px;flex:1}
+  .zona h3{margin:0 0 8px;font-size:14px;color:#334155}
+  .nodo{background:#e2f3f7;border:2px solid #0b6e86;border-radius:8px;padding:9px 11px;font-size:13px;margin-bottom:8px}
+  .nodo b{display:block;color:#08566a;font-size:13.5px}
+  .nodo.ext{background:#f8fafc;border-color:#64748b}
+  .nodo.ext b{color:#334155}
+  .nodo.fut{background:#fff;border-style:dashed;border-color:#a16207}
+  .nodo.fut b{color:#a16207}
+  .flecha{display:flex;align-items:center;justify-content:center;font-size:12px;text-align:center;color:#334155;min-width:120px}
+  .flecha div{border-top:2px solid #334155;position:relative;padding-top:6px;width:100%}
+  .flecha div::after{content:"";position:absolute;right:-2px;top:-7px;border:6px solid transparent;border-left:9px solid #334155}
+  .ley{margin-top:12px;font-size:12px;color:#334155;display:flex;gap:18px}
+  .ley span{display:inline-flex;align-items:center;gap:6px}
+  .m{width:18px;height:12px;border:2px solid #0b6e86;background:#e2f3f7;border-radius:3px;display:inline-block}
+  .m.f{border-style:dashed;border-color:#a16207;background:#fff}
+</style></head><body><div id="d">
+<div class="fila">
+  <div class="zona" style="flex:.8"><h3>Clientes (Internet)</h3>
+    <div class="nodo ext"><b>Navegadores</b>Usuarios cliente y analistas (escritorio y móvil)</div>
+    <div class="nodo ext"><b>Agentes de recolección</b>Servidores, firewalls y aplicaciones de cada pyme (scripts, syslog o el simulador)</div>
+  </div>
+  <div class="flecha"><div>HTTPS / WSS<br>puerto 443</div></div>
+  <div class="zona" style="flex:1.4"><h3>Proveedor cloud (PaaS: Render; alternativa: AWS / Azure / GCP)</h3>
+    <div class="nodo"><b>Balanceador de carga + terminación TLS</b>Certificado administrado, redirección HTTP→HTTPS, health check /salud</div>
+    <div class="fila">
+      <div style="flex:1">
+        <div class="nodo"><b>Instancia web 1..N</b>Contenedor Node.js 22 (Express + Socket.IO), sin estado, autoescalable</div>
+        <div class="nodo fut"><b>Redis (escalado)</b>Adaptador Socket.IO y contadores de rate limit compartidos</div>
+      </div>
+      <div style="flex:1">
+        <div class="nodo"><b>PostgreSQL 16 administrado</b>Red privada · cifrado en reposo · respaldos diarios</div>
+        <div class="nodo fut"><b>Réplica de lectura</b>Consultas del panel y reportes</div>
+        <div class="nodo fut"><b>Almacenamiento de objetos</b>Archivo histórico de particiones (Parquet)</div>
+      </div>
+    </div>
+  </div>
+  <div class="flecha"><div>SMTP<br>STARTTLS 587</div></div>
+  <div class="zona" style="flex:.6"><h3>Servicios externos</h3>
+    <div class="nodo ext"><b>Proveedor de correo</b>Brevo / Gmail SMTP: recuperación de contraseñas</div>
+  </div>
+</div>
+<div class="ley"><span><i class="m"></i> Componente implementado y desplegado</span><span><i class="m f"></i> Componente previsto para escalar (fase 2)</span></div>
+</div></body></html>
