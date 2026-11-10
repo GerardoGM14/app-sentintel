@@ -21,3 +21,6 @@ Thumbs.db
 
 # Material del curso (pauta de la evaluación)
 TA_5_UII*.docx
+
+# Informe en Word (se entrega por separado)
+informe/*.docx
